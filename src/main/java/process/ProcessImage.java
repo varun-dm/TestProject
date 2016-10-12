@@ -3,7 +3,7 @@ package process;
 import java.awt.image.BufferedImage;
 import java.lang.Math;
 
-import com.jhlabs.image.ConvolveFilter;
+import imgprocwrapper.ImgProcWrapper;
 
 public class ProcessImage {
 
@@ -20,19 +20,17 @@ public class ProcessImage {
      */
     static public BufferedImage processing(BufferedImage srcImg, Kernel k, int nb_steps)
     {
-        ConvolveFilter cf = new ConvolveFilter(k.getN(), k.getN(), k.getValues());
-
         BufferedImage res;
         if(nb_steps%2==0) {
             res = srcImg;
         } else {
-            res = cf.filter(srcImg, null);
+            res = ImgProcWrapper.convolve(srcImg, k.getValues(), k.getN());
         }
         
         BufferedImage tmp;
         for(int i=0; i<nb_steps/2; ++i) {
-            tmp = cf.filter(res, null);
-            res = cf.filter(tmp, null);
+            tmp = ImgProcWrapper.convolve(res, k.getValues(), k.getN());
+            res = ImgProcWrapper.convolve(tmp, k.getValues(), k.getN());
         }
 
         return res;
