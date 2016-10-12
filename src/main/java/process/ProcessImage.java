@@ -3,6 +3,8 @@ package process;
 import java.awt.image.BufferedImage;
 import java.lang.Math;
 
+import com.jhlabs.image.ConvolveFilter;
+
 public class ProcessImage {
 
     /** Dumb function to perform a convolution by a specific filter^n.
@@ -18,17 +20,19 @@ public class ProcessImage {
      */
     static public BufferedImage processing(BufferedImage srcImg, Kernel k, int nb_steps)
     {
+        ConvolveFilter cf = new ConvolveFilter(k.getN(), k.getN(), k.getValues());
+
         BufferedImage res;
         if(nb_steps%2==0) {
             res = srcImg;
         } else {
-            res = ProcessImage.convolution(srcImg, k);
+            res = cf.filter(srcImg, null);
         }
         
         BufferedImage tmp;
         for(int i=0; i<nb_steps/2; ++i) {
-            tmp = ProcessImage.convolution(res, k);
-            res = ProcessImage.convolution(tmp, k);
+            tmp = cf.filter(res, null);
+            res = cf.filter(tmp, null);
         }
 
         return res;
